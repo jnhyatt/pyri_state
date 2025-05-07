@@ -9,12 +9,9 @@ mod app {
 
     use bevy_app::{App, Plugin};
 
-    use crate::{
-        schedule::StateFlush,
-        state::{LocalState, State},
-    };
+    use crate::schedule::StateFlush;
 
-    use super::{schedule_apply_flush, schedule_local_apply_flush};
+    use super::*;
 
     /// A plugin that adds an apply flush system for the [`State`] type `S`
     /// to the [`StateFlush`] schedule.
@@ -70,7 +67,7 @@ use crate::{
 /// A system set that applies all triggered [`State`] flushes at the end of
 /// the [`StateFlush`](crate::schedule::StateFlush) schedule.
 #[derive(SystemSet, Clone, Hash, PartialEq, Eq, Debug)]
-pub struct ApplyFlushSet;
+pub struct ApplyFlushSystems;
 
 fn apply_flush<S: State + Clone>(
     mut commands: Commands,
@@ -96,7 +93,7 @@ pub fn schedule_apply_flush<S: State + Clone>(schedule: &mut Schedule) {
     schedule.add_systems(
         (apply_flush::<S>, S::reset_trigger)
             .run_if(S::is_triggered)
-            .in_set(ApplyFlushSet),
+            .in_set(ApplyFlushSystems),
     );
 }
 
@@ -136,6 +133,6 @@ pub fn schedule_local_apply_flush<S: LocalState + Clone>(schedule: &mut Schedule
     schedule.add_systems(
         (local_apply_flush::<S>, local_reset_trigger::<S>)
             .chain()
-            .in_set(ApplyFlushSet),
+            .in_set(ApplyFlushSystems),
     );
 }

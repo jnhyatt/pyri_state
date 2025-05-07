@@ -92,17 +92,16 @@ pub use app::*;
 
 #[cfg(feature = "bevy_app")]
 mod app {
-    use core::{fmt::Debug, hash::Hash, marker::PhantomData};
+    use core::marker::PhantomData;
 
     use bevy_app::{App, Plugin};
-    use bevy_state::prelude as bevy;
 
-    use crate::{schedule::StateFlush, state::StateMut};
+    use crate::schedule::StateFlush;
 
-    use super::{BevyState, schedule_bevy_state};
+    use super::*;
 
     /// A plugin that adds [`BevyState<S>`] propagation systems for the
-    /// [`State`](crate::state::State) type `S` to the [`StateFlush`] schedule.
+    /// [`State`] type `S` to the [`StateFlush`] schedule.
     ///
     /// Calls [`schedule_bevy_state<S>`].
     pub struct BevyStatePlugin<S: StateMut + Clone + PartialEq + Eq + Hash + Debug>(PhantomData<S>);
@@ -131,7 +130,7 @@ use bevy_state::prelude as bevy;
 
 use crate::{
     access::{NextMut, NextRef},
-    schedule::ResolveStateSet,
+    schedule::ResolveStateSystems,
     state::{State, StateMut},
 };
 
@@ -187,7 +186,7 @@ pub fn schedule_bevy_state<S: State + StateMut + Clone + PartialEq + Eq + Hash +
         };
 
     schedule.add_systems((
-        sync_pyri_state.in_set(ResolveStateSet::<S>::Compute),
-        sync_bevy_state.in_set(ResolveStateSet::<S>::AnyFlush),
+        sync_pyri_state.in_set(ResolveStateSystems::<S>::Compute),
+        sync_bevy_state.in_set(ResolveStateSystems::<S>::AnyFlush),
     ));
 }

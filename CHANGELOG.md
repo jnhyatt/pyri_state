@@ -13,6 +13,9 @@
     - Added `EnabledInEnabledState` component
 - **Added `no_std` support**
 - Added `NextStateStackCommandsExt` extension trait
+- Moved `StateFlush` to before `PreUpdate` schedule
+- Renamed `ApplyFlushSet` -> `ApplyFlushSystems` system set
+- Renamed `ResolveStateSet` -> `ResolveStateSystems` system set
 
 # Version 0.3.0
 

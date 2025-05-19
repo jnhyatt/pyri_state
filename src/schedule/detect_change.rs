@@ -9,12 +9,9 @@ mod app {
 
     use bevy_app::{App, Plugin};
 
-    use crate::{
-        schedule::StateFlush,
-        state::{LocalState, State},
-    };
+    use crate::schedule::StateFlush;
 
-    use super::{schedule_detect_change, schedule_local_detect_change};
+    use super::*;
 
     /// A plugin that adds a change detection system for the [`State`] type `S`
     /// to the [`StateFlush`] schedule.
@@ -60,10 +57,9 @@ use bevy_ecs::{
 
 use crate::{
     next_state::{NextState, TriggerStateFlush},
+    schedule::resolve_state::ResolveStateSystems,
     state::{LocalState, State, StateExtEq as _},
 };
-
-use super::resolve_state::ResolveStateSet;
 
 /// Add change detection systems for the [`State`] type `S` to a schedule.
 ///
@@ -72,7 +68,7 @@ pub fn schedule_detect_change<S: State + Eq>(schedule: &mut Schedule) {
     schedule.add_systems(
         S::trigger
             .run_if(not(S::is_triggered).and(S::will_change))
-            .in_set(ResolveStateSet::<S>::Trigger),
+            .in_set(ResolveStateSystems::<S>::Trigger),
     );
 }
 
@@ -91,5 +87,5 @@ fn local_detect_change<S: LocalState + Eq>(
 ///
 /// Used in [`LocalDetectChangePlugin<S>`].
 pub fn schedule_local_detect_change<S: LocalState + Eq>(schedule: &mut Schedule) {
-    schedule.add_systems(local_detect_change::<S>.in_set(ResolveStateSet::<S>::Trigger));
+    schedule.add_systems(local_detect_change::<S>.in_set(ResolveStateSystems::<S>::Trigger));
 }

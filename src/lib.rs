@@ -11,7 +11,7 @@
 //!    [`NextStateBuffer`](next_state::buffer::NextStateBuffer) resource by default.
 //! 3. A state flush is triggered by the [`TriggerStateFlush`](next_state::TriggerStateFlush)
 //!    resource and handled in the [`StateFlush`](schedule::StateFlush) schedule.
-//! 4. State flush hooks are organized into [`ResolveStateSet`](schedule::ResolveStateSet)
+//! 4. State flush hooks are organized into [`ResolveStateSystems`](schedule::ResolveStateSystems)
 //!    system sets.
 //! 5. Tools are provided for state [setup], [access], [pattern-matching](pattern),
 //!    [debugging](debug), and [more](extra).
@@ -97,6 +97,8 @@
 //! ```
 
 #![no_std]
+// Support configuring Bevy lints within code.
+#![cfg_attr(bevy_lint, feature(register_tool), register_tool(bevy))]
 
 extern crate alloc;
 

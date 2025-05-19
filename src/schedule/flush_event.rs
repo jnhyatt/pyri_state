@@ -9,14 +9,9 @@ mod app {
 
     use bevy_app::{App, Plugin};
 
-    use crate::{
-        schedule::StateFlush,
-        state::{LocalState, State},
-    };
+    use crate::schedule::StateFlush;
 
-    use super::{
-        LocalStateFlushEvent, StateFlushEvent, schedule_flush_event, schedule_local_flush_event,
-    };
+    use super::*;
 
     /// A plugin that adds a [`StateFlushEvent<S>`] sending system for the [`State`] type `S`
     /// to the [`StateFlush`] schedule.
@@ -67,7 +62,7 @@ use bevy_ecs::{
 use crate::{
     access::FlushRef,
     next_state::{NextState, TriggerStateFlush},
-    schedule::ResolveStateSet,
+    schedule::ResolveStateSystems,
     state::{LocalState, State},
 };
 
@@ -75,6 +70,7 @@ use crate::{
 ///
 /// Added [by default](pyri_state_derive::State) by [`FlushEventPlugin<S>`].
 #[derive(Event)]
+#[cfg_attr(feature = "bevy_reflect", derive(bevy_reflect::Reflect))]
 pub struct StateFlushEvent<S: State> {
     /// The state before the flush, or `None` if disabled.
     pub old: Option<S>,
@@ -86,6 +82,7 @@ pub struct StateFlushEvent<S: State> {
 ///
 /// Added [by default](pyri_state_derive::State) by [`LocalFlushEventPlugin<S>`].
 #[derive(Event)]
+#[cfg_attr(feature = "bevy_reflect", derive(bevy_reflect::Reflect))]
 pub struct LocalStateFlushEvent<S: LocalState> {
     /// The entity for which the state flush occurred.
     pub entity: Entity,
@@ -110,7 +107,7 @@ fn send_flush_event<S: State + Clone>(
 ///
 /// Used in [`FlushEventPlugin<S>`].
 pub fn schedule_flush_event<S: State + Clone>(schedule: &mut Schedule) {
-    schedule.add_systems(send_flush_event::<S>.in_set(ResolveStateSet::<S>::AnyFlush));
+    schedule.add_systems(send_flush_event::<S>.in_set(ResolveStateSystems::<S>::AnyFlush));
 }
 
 fn send_local_flush_event<S: LocalState + Clone>(
@@ -135,5 +132,5 @@ fn send_local_flush_event<S: LocalState + Clone>(
 ///
 /// Used in [`LocalFlushEventPlugin<S>`].
 pub fn schedule_local_flush_event<S: LocalState + Clone>(schedule: &mut Schedule) {
-    schedule.add_systems(send_local_flush_event::<S>.in_set(ResolveStateSet::<S>::Flush));
+    schedule.add_systems(send_local_flush_event::<S>.in_set(ResolveStateSystems::<S>::Flush));
 }

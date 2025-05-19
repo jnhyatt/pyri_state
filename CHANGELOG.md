@@ -3,6 +3,7 @@
 # Version 0.4.0
 
 - **Updated to Bevy 0.16.0**
+- **Added `no_std` support**
 - **Extended reaction components:**
     - Removed `Single` variant from `DespawnOnExit` and `DespawnOnDisable` components
     - Renamed `DespawnOnExit` -> `DespawnOnExitState` component
@@ -11,8 +12,10 @@
     - Renamed `VisibleWhileEnabled` -> `VisibleInEnabledState` component
     - Added `EnabledInState` component
     - Added `EnabledInEnabledState` component
-- **Added `no_std` support**
 - Added `NextStateStackCommandsExt` extension trait
+- Moved `StateFlush` to before `PreUpdate` schedule
+- Renamed `ApplyFlushSet` -> `ApplyFlushSystems` system set
+- Renamed `ResolveStateSet` -> `ResolveStateSystems` system set
 
 # Version 0.3.0
 

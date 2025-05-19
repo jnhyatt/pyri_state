@@ -47,7 +47,8 @@ bevy_render = { version = "0.16", default-features = false, optional = true }
 bevy_state = { version = "0.16", default-features = false, features = [
     "bevy_app",
 ], optional = true }
-pyri_state_derive = { version = "0.4", path = "derive" }
+pyri_state_derive = { version = "=0.4.1", path = "derive" }
+tiny_bail = "0.4"
 
 [dev-dependencies]
 bevy = { version = "0.16", default-features = false, features = [
@@ -59,11 +60,10 @@ bevy = { version = "0.16", default-features = false, features = [
 ] }
 iyes_progress = "0.14"
 
-[patch.crates-io]
-iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
-
 [lints.rust]
 missing_docs = "deny"
+# Mark `bevy_lint` as a valid `cfg` for when `bevy_lint` runs.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"] }
 
 [lints.clippy]
 too_many_arguments = "allow"
@@ -71,3 +71,8 @@ type_complexity = "allow"
 std_instead_of_core = "warn"
 std_instead_of_alloc = "warn"
 alloc_instead_of_core = "warn"
+
+# See more Bevy lints here: <https://thebevyflock.github.io/bevy_cli/bevy_lint/lints>.
+[package.metadata.bevy_lint]
+restriction = "warn"
+pedantic = "warn"
